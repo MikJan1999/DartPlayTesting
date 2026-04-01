@@ -15,7 +15,7 @@ export default function GameOptions() {
                     <FormItem>
                         <FlexBetween style={{ marginBottom: 25 }}>
                             <TitleIcon icon={'person'} />
-                            <label style={{ width: '100%', marginLeft: 15 }}>Jugadores</label>
+                            <label style={{ width: '100%', marginLeft: 15 }}>Ilość graczy</label>
                         </FlexBetween>
                         <FlexCenter>
                             <div className="grid grid-three-column">
@@ -36,7 +36,7 @@ export default function GameOptions() {
                     <FormItem className="down">
                         <FlexBetween>
                             <TitleIcon icon={'sports_esports'} />
-                            <label style={{ width: '100%', marginLeft: 15 }}>Juego</label>
+                            <label style={{ width: '100%', marginLeft: 15 }}>Rodzaj rozgrywki</label>
                         </FlexBetween>
                         <FlexCenter>
                             <div className="grid grid-two-column down small">
@@ -49,7 +49,7 @@ export default function GameOptions() {
 
                     <div className="flex end down">
                         <button type="submit" className="btn spec" disabled={!isValidForm}>
-                            Siguiente
+                            Przejdź dalej
                         </button>
                     </div>
                 </form>

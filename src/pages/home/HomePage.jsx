@@ -31,8 +31,8 @@ export default function HomePage() {
 
     return (
         <>
-            <DecorativeHeader></DecorativeHeader>
-
+            <DecorativeHeader style={{ height: '200px' }}></DecorativeHeader>
+            
             {unfinishedGame.hasUnfinishedGame ? <UnfinishedGameLink url={unfinishedGame.url} /> : null}
 
             <DecorativeHeaderSpace extraSpace={unfinishedGame.hasUnfinishedGame}>
@@ -42,13 +42,11 @@ export default function HomePage() {
                             Graj
                         </Link>
                         <Link to={APP_ROUTES.ABOUT} className="w100 btn center">
-                            Sobre la app
+                            O aplikacji
                         </Link>
-                        <Link to={APP_ROUTES.CONTACT} className="w100 btn center">
-                            Contacto
-                        </Link>
+
                         <Link to={APP_ROUTES.CHANGELOG} className="w100 btn center">
-                            Histórico de versiones
+                            Historia zmian 
                         </Link>
                     </div>
                 </div>

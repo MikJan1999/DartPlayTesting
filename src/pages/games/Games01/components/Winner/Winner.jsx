@@ -22,13 +22,13 @@ export default function Winner({ darts }) {
             <OverlayBlock />
             <div className="flex center column w100" style={styles}>
                 <h1>
-                    ¡Ha ganado <span style={name}>{darts.winner.name}</span>!
+                    Zwycięstwo <span style={name}>{darts.winner.name}</span>!
                 </h1>
 
                 <Pyro />
 
                 <span className="btn" onClick={onReturnToHomeClick}>
-                    Volver al menú
+                    Wróć do menu głównego
                 </span>
             </div>
         </>
