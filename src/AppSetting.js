@@ -1,8 +1,8 @@
 export class AppSettings {
     static LOCAL_STORAGE_KEY = 'darts-23112022-v2';
-    static DEVELOPER_MAIL = 'davidferflo2@gmail.com';
-    static MAIL_SUBJECT_SEND = 'Soporte App Dardos';
-    static MAIL_API_ENDPOINT = 'https://vps-f87b433e.vps.ovh.net/mail/mail.api.php';
+    static DEVELOPER_MAIL = 'mikolaj.januszko@gmail.com';
+    static MAIL_SUBJECT_SEND = 'WSPARCIE TECHNICZNE';
+    static MAIL_API_ENDPOINT = '.......';
     static CRICKET_ALL_NUMBERS = 'All numbers'
 
     static AVAILABLE_GAMES = [301, 501, 701, 1001, 'cricket', this.CRICKET_ALL_NUMBERS];

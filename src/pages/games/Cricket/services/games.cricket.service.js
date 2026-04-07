@@ -1,19 +1,18 @@
 export const randomKey = '019438ac-0522-4b0e-';
-
+ 
 export const getPlayersKeys = names => {
     return names.map((item, ind) => {
         const id = randomKey + (ind + 1);
-
         return {
             id: id,
             name: item,
         };
     });
 };
-
+ 
 export const initialGameObject = (players, game, url, rounds = 21) => {
     const playersKeys = getPlayersKeys(players);
-
+ 
     return {
         url: url,
         game: game,
@@ -47,114 +46,158 @@ export const initialGameObject = (players, game, url, rounds = 21) => {
         finished: false,
     };
 };
-
-
-const getDirectWinner = gameScored => {
-    return gameScored.scorer.board.find(item => {
-        return item.score === 0;
-    });
+ 
+// ─── helpers ────────────────────────────────────────────────────────────────
+ 
+const CRICKET_NUMBERS = [15, 16, 17, 18, 19, 20, 25];
+ 
+/** Czy dany numer jest zamknięty przez konkretnego gracza (>= 3 trafienia) */
+const isNumberClosedFor = (player, number) => {
+    return (player.valid_points[number] ?? 0) >= 3;
 };
-
-const getCalculatedWinner = game => {
-    const scores = game.scorer.board.map(item => item.score);
-    const minimumScore = Math.min(...scores);
-    const winners = game.scorer.board.filter(item => item.score === minimumScore);
-
-    if (winners.length === 1) return winners[0];
-    return winners;
+ 
+/** Czy dany numer jest zamknięty przez WSZYSTKICH graczy */
+const isNumberClosedForEveryone = (board, number) => {
+    return board.every(player => isNumberClosedFor(player, number));
 };
-
-const calculateWinner = game => {
-    const directWinner = getDirectWinner(game);
-    if (directWinner) return directWinner;
-
-    if (game.round >= game.maxRound) {
-        const calculatedWinner = getCalculatedWinner(game);
-
-        return calculatedWinner;
-    }
-};
-
-const isViableScore = (game, score) => {
-    const playingUser = game.scorer.board.find(item => item.id === game.currentUser.id);
-    const isViable = playingUser.score - score >= 0;
-
-    return isViable;
-};
-
-const setNextPlayer = game => {
-    const currentUser = game.players.findIndex(item => item.id === game.currentUser.id);
-    const user = game.players[currentUser + 1] || game.players[0];
-    game.currentUser = user;
-    game.scorer.userId = game.currentUser.id;
-};
-
+ 
+/** Czy gracz zamknął WSZYSTKIE numery */
 const isEveryValidPointClosedFor = player => {
-    
-}
-const isEveryValidPointClosedForEveryone = board => {
-    return board.find(item => Object.values(item.valid_points).every(point => point >= 3));
-}
-const isNumberClosedForEveryone = (board, score) => {
-    return board.find(playerBoard => Object.values(playerBoard.valid_points).every(point => point[score] >= 3));
-}
-const isNumberClosedFor = player => { }
-
-const scorePoints = (playingUser, game, score, realValue) => {
-    if (isViableScore(game, score)) {
-        playingUser.score -= score;
-    }
-    if (realValue) {
-        playingUser.throws = [...playingUser.throws, realValue];
-    }
-    playingUser.turn += 1;
-
-    return game;
+    return CRICKET_NUMBERS.every(n => (player.valid_points[n] ?? 0) >= 3);
 };
-
-
-export function playCricketTurn(game, score, realValue = false) {
-
-    // return game;
+ 
+const setNextPlayer = game => {
+    const currentIndex = game.players.findIndex(item => item.id === game.currentUser.id);
+    const nextUser = game.players[currentIndex + 1] || game.players[0];
+    game.currentUser = nextUser;
+    game.scorer.userId = nextUser.id;
+};
+ 
+// ─── winner logic ────────────────────────────────────────────────────────────
+ 
+/**
+ * Zwycięzca w Cricket:
+ * - zamknął wszystkie numery
+ * - ma najniższy (lub równy 0) wynik punktowy
+ */
+const calculateWinner = game => {
+    const board = game.scorer.board;
+ 
+    // Znajdź graczy, którzy zamknęli wszystkie numery
+    const closedAll = board.filter(isEveryValidPointClosedFor);
+ 
+    const candidates = closedAll.length > 0 ? closedAll : board;
+ 
+    const minScore = Math.min(...candidates.map(p => p.score));
+    const winners = candidates.filter(p => p.score === minScore);
+ 
+    return winners.length === 1 ? winners[0] : winners;
+};
+ 
+const checkWinner = game => {
+    const board = game.scorer.board;
+ 
+    // Wygrywa ten, kto zamknął wszystkie numery i ma najniższy lub zerowy wynik
+    const winner = board.find(player => {
+        if (!isEveryValidPointClosedFor(player)) return false;
+        // Sprawdź czy żaden inny gracz nie ma niższego wyniku
+        const othersMinScore = board
+            .filter(p => p.id !== player.id)
+            .reduce((min, p) => Math.min(min, p.score), Infinity);
+        return player.score <= othersMinScore;
+    });
+ 
+    return winner || null;
+};
+ 
+// ─── scoring logic ───────────────────────────────────────────────────────────
+ 
+/**
+ * Obsługuje pojedyncze trafienie w dany numer.
+ * Zwraca liczbę "nadmiarowych" trafień, które mogą generować punkty.
+ */
+const registerHit = (player, number) => {
+    const current = player.valid_points[number] ?? 0;
+    const newValue = current + 1;
+    player.valid_points[number] = Math.min(newValue, 3); // max 3 zapamiętujemy
+ 
+    // Nadmiarowe trafienia (powyżej 3) generują punkty
+    const overflow = Math.max(0, newValue - 3);
+    return overflow;
+};
+ 
+/**
+ * Przetwarza jedno trafienie gracza.
+ * score     – wartość pola (15–20 lub 25)
+ * multiplier – 1 (single), 2 (double), 3 (triple)
+ */
+const processSingleThrow = (game, playingUser, score, multiplier = 1) => {
+    if (!CRICKET_NUMBERS.includes(score)) return; // ignoruj numery spoza Cricket
+ 
+    const board = game.scorer.board;
+ 
+    for (let i = 0; i < multiplier; i++) {
+        const overflow = registerHit(playingUser, score);
+ 
+        // Jeśli numer jest już zamknięty przez WSZYSTKICH – brak punktów dla kogokolwiek
+        if (isNumberClosedForEveryone(board, score)) continue;
+ 
+        // Nadmiarowe trafienia = punkty dla gracza (jeśli numer nie jest zamknięty przez wszystkich)
+        if (overflow > 0) {
+            playingUser.score += score;
+        }
+    }
+};
+ 
+// ─── main export ─────────────────────────────────────────────────────────────
+ 
+/**
+ * Wykonuje turę gracza.
+ *
+ * score     – trafiony numer (15, 16, 17, 18, 19, 20, 25) lub 0 (pudło)
+ * multiplier – krotność trafienia: 1 (single), 2 (double), 3 (triple)
+ * realValue  – opcjonalna etykieta do zapisu w historii rzutów
+ */
+export function playCricketTurn(game, score, multiplier = 1, realValue = false) {
+    if (game.finished) return game;
+ 
+    // Koniec rund – wyłaniamy zwycięzcę
     if (game.round >= game.maxRound) {
         game.isThereWinner = true;
         game.winner = calculateWinner(game);
         game.finished = true;
-
         return game;
     }
-
+ 
     const playingUser = game.scorer.board.find(item => item.id === game.currentUser.id);
-
-    console.log({
-        playingUser, game, score, is_viable: isViableScore(game, score) 
-    });
-    return game;
-
-    // if (!isViableScore(game, score)) {
-    //     setNextPlayer(game);
-    //     playingUser.turn = 1;
-
-    //     return game;
-    // }
-
-    scorePoints(playingUser, game, score, realValue);
-
-    if (playingUser.turn >= 4) {
-        playingUser.turn = 1;
-        setNextPlayer(game);
-        game.round += 1;
+ 
+    // Zapisz rzut w historii
+    if (realValue) {
+        playingUser.throws = [...playingUser.throws, realValue];
     }
-
-    const winner = getDirectWinner(game);
-
+ 
+    // Obsłuż trafienie (score === 0 to pudło – nic nie robimy poza zapisem tury)
+    if (score !== 0) {
+        processSingleThrow(game, playingUser, score, multiplier);
+    }
+ 
+    // Sprawdź wygranego po każdym rzucie
+    const winner = checkWinner(game);
     if (winner) {
         game.isThereWinner = true;
         game.winner = winner;
         game.finished = true;
-
         return game;
     }
-
+ 
+    // Przejdź do następnego rzutu / gracza
+    playingUser.turn += 1;
+ 
+    if (playingUser.turn > 3) {
+        playingUser.turn = 1;
+        setNextPlayer(game);
+        game.round += 1;
+    }
+ 
     return game;
 }

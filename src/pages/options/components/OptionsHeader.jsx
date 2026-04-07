@@ -4,7 +4,7 @@ import { DefaultGeneralHeader } from "../../../components/headers/GeneralHeader"
 export default function OptionsHeader() {
     return (
         <DefaultGeneralHeader
-            text={"Opciones"}
+            text={"Konfiguracja uczestników"}
             animation={true}
         ></DefaultGeneralHeader>
     );

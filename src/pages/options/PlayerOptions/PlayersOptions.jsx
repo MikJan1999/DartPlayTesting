@@ -15,7 +15,7 @@ export default function PlayersOptions() {
                         <FormItem key={player.index}>
                             <FlexBetween>
                                 <TitleIcon icon={'person'} />
-                                <label style={{ width: '100%', marginLeft: 15 }}>Jugador {player.index}</label>
+                                <label style={{ width: '100%', marginLeft: 15 }}>Uczestnik {player.index}</label>
                             </FlexBetween>
 
                             <input type="text" onChange={curriedOnChange(player.index)} value={player.name} />
@@ -24,7 +24,7 @@ export default function PlayersOptions() {
 
                     <FlexEnd>
                         <button type="submit" className="btn spec" disabled={!isFormValid}>
-                            ¡Jugar!
+                            Dalej !
                         </button>
                     </FlexEnd>
                 </form>
