@@ -39,7 +39,7 @@ export class CricketService {
     
             return calculatedWinner;
         }
-    };
+    }
 
     _isEveryValidPointClosedFor(player) {
         return Object.values(player.valid_points).every(point => point >= this.maxValidPoint);

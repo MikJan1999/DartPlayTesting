@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "types": ["node"],
+    "baseUrl": "src",
+    "paths": {
+      "AppSetting": ["AppSetting.js"],
+      "hooks/*": ["hooks/*"],
+      "components/*": ["components/*"],
+      "pages/*": ["pages/*"],
+      "services/*": ["services/*"],
+      "context/*": ["context/*"]
+    },
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "ignoreDeprecations": "6.0"
+  },
+  "include": [
+    "tests/**/*.ts",
+    "playwright.config.ts",
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "dist"
+  ]
+}

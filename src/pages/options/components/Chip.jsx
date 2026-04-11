@@ -1,24 +1,15 @@
-import React from "react";
+export default function Chip({ value, current, onClick, type }) {
+    const isActive = current === value;
 
-export default function Chip({
-    style,
-    value,
-    onClick,
-    type,
-    current,
-    css = true,
-}) {
     return (
-        <span
-            className={
-                "chip" +
-                (css ? " number" : "") +
-                (current === value ? " active" : "")
-            }
-            style={style}
-            onClick={(_) => onClick(type, value)}
+        <button
+            type="button"
+            role="radio"
+            aria-checked={isActive}
+            className={`chip number ${isActive ? 'active' : ''}`}
+            onClick={() => onClick(type, value)}
         >
             {value}
-        </span>
+        </button>
     );
 }

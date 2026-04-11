@@ -14,9 +14,9 @@ function UnfinishedGameLink({ url }) {
     return (
         <div style={position} className="animate__animated animate__fadeInRight animate__delay-1s flex center">
             <div className="flex center column panel alternate unfinished-game-div">
-                <span>Hay una partida sin terminar guardada.</span>
+                <span>Jest zapisana niedokończona rozgrywka.</span>
                 <Link to={url} className="btn w100 center alternate">
-                    Continuar partida
+                    Kontynuuj rozgrywkę
                 </Link>
             </div>
         </div>

@@ -24,19 +24,22 @@ export function GeneralHeaderWithNoRound({ children }) {
 }
 
 export function DefaultGeneralHeader({ text, animation = false }) {
-    const animationClass = animation ? 'animate__animated animate__pulse animate__fast animate__delay-2s animate__infinite' : '';
+    const animationClass = animation
+        ? 'animate__animated animate__pulse animate__fast animate__delay-2s animate__infinite'
+        : '';
 
     return (
         <>
             <div className="general-header flex between">
                 <Link to={APP_ROUTES.HOME}>
-                    <Icon icon={'home'}></Icon>
+                    <Icon icon="home" />
                 </Link>
+
                 <span className={animationClass}>{text}</span>
-                <Link to={APP_ROUTES.SETTINGS}>
-                    <Icon icon={'settings'}></Icon>
-                </Link>
-                <div className="general-header round-back"></div>{' '}
+
+                <div style={{ width: '24px' }}></div>
+
+                <div className="general-header round-back"></div>
             </div>
         </>
     );
