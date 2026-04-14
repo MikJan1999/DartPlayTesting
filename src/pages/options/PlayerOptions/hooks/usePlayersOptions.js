@@ -13,14 +13,15 @@ export default function usePlayersOptions() {
 
     const [players, setPlayers] = useState(initialPlayersState);
 
+    const MAX_NAME_LENGTH = 20;
+
     const curriedOnChange = playerIndex => event => {
-        const { value } = event.target;
-        setPlayers(prevPlayers => {
-            return {
-                ...prevPlayers,
-                [playerIndex]: value,
-            };
-        });
+        const value = event.target.value.slice(0, MAX_NAME_LENGTH);
+
+        setPlayers(prevPlayers => ({
+            ...prevPlayers,
+            [playerIndex]: value,
+        }));
     };
 
     const validatePlayers = playersValues => {
@@ -33,11 +34,11 @@ export default function usePlayersOptions() {
         }
 
         if (game === AppSettings.CRICKET_ALL_NUMBERS) {
-            return APP_ROUTES.GAMES.CRICKET_ALL_NUMBERS.replace(':game', 'cricket')
+            return APP_ROUTES.GAMES.CRICKET_ALL_NUMBERS.replace(':game', 'cricket');
         }
         
-        return APP_ROUTES.GAMES.CRICKET.replace(':game', game)
-    }
+        return APP_ROUTES.GAMES.CRICKET.replace(':game', game);
+    };
 
     const onSubmit = e => {
         e.preventDefault();
@@ -45,7 +46,6 @@ export default function usePlayersOptions() {
         if (!validatePlayers(playersValues)) return;
 
         const gameRoute = getGameRoute(game);
-        // const gameRoute = game !== 'cricket' ? APP_ROUTES.GAMES.X01.replace(':game', game) : APP_ROUTES.GAMES.CRICKET.replace(':game', game);
         const gameStep = APP_ROUTES.GAMES.PARENT.replace('/*', gameRoute);
         const gameChooser = getInitialGameStateByGame(game);
 

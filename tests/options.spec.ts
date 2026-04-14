@@ -4,9 +4,10 @@ test.beforeEach(async ({ page }) => {
   await page.goto('http://localhost:3000/options');
 });
 
-/* -------------------------------------------------------
-   1. Render ekranu
-------------------------------------------------------- */
+
+
+
+
 test('Renders the options screen', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'home' })).toBeVisible();
   await expect(page.getByText('Konfiguracja uczestników')).toBeVisible();
@@ -26,9 +27,10 @@ test('Renders the options screen', async ({ page }) => {
   }
 });
 
-/* -------------------------------------------------------
-   2. Walidacja formularza
-------------------------------------------------------- */
+
+
+
+
 test('Next button disabled until both options selected', async ({ page }) => {
   const next = page.getByRole('button', { name: 'Przejdź dalej', exact: true });
   await expect(next).toBeDisabled();
@@ -40,9 +42,10 @@ test('Next button disabled until both options selected', async ({ page }) => {
   await expect(next).toBeEnabled();
 });
 
-/* -------------------------------------------------------
-   3. Zachowanie UI – tylko jeden aktywny chip
-------------------------------------------------------- */
+
+
+
+
 test('Only one player chip active at a time', async ({ page }) => {
   const p2 = page.getByRole('radio', { name: '2', exact: true });
   const p3 = page.getByRole('radio', { name: '3', exact: true });
@@ -67,9 +70,10 @@ test('Only one game mode active at a time', async ({ page }) => {
   await expect(m301).toHaveAttribute('aria-checked', 'false');
 });
 
-/* -------------------------------------------------------
-   4. Odporność – kliknięcie tego samego chipa
-------------------------------------------------------- */
+
+
+
+
 test('Clicking the same chip twice keeps it selected', async ({ page }) => {
   const chip = page.getByRole('radio', { name: '2', exact: true });
 
@@ -79,9 +83,9 @@ test('Clicking the same chip twice keeps it selected', async ({ page }) => {
   await expect(chip).toHaveAttribute('aria-checked', 'true');
 });
 
-/* -------------------------------------------------------
-   5. Dostępność – poprawne role i aria
-------------------------------------------------------- */
+
+
+
 test('All chips have correct ARIA attributes', async ({ page }) => {
   const radios = page.getByRole('radio');
   await expect(radios).toHaveCount(11);
@@ -92,9 +96,9 @@ test('All chips have correct ARIA attributes', async ({ page }) => {
   }
 });
 
-/* -------------------------------------------------------
-   6. Nawigacja – przejście dalej
-------------------------------------------------------- */
+ 
+
+
 test('Navigates to players screen after selecting options', async ({ page }) => {
   await page.getByRole('radio', { name: '2', exact: true }).click();
   await page.getByRole('radio', { name: '301', exact: true }).click();
@@ -103,9 +107,10 @@ test('Navigates to players screen after selecting options', async ({ page }) => 
   await expect(page).toHaveURL(/players/);
 });
 
-/* -------------------------------------------------------
-   7. Kombinacje wyborów (Twój test)
-------------------------------------------------------- */
+
+
+
+
 test('Combination of choice', async ({ page }) => {
   const players = ['2', '3', '4', '5', '6'];
   const modes = ['301', '501', '701', '1001', 'cricket', 'All numbers'];

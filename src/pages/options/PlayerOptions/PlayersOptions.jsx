@@ -15,11 +15,19 @@ export default function PlayersOptions() {
                         <FormItem key={player.index}>
                             <FlexBetween>
                                 <TitleIcon icon={'person'} />
-                                <label style={{ width: '100%', marginLeft: 15 }}>Uczestnik {player.index}</label>
-                            </FlexBetween>
+                                <label htmlFor={`player-${player.index}`} style={{ width: '100%', marginLeft: 15 }}>
+                               Uczestnik {player.index}
+                                </label>                            
+                                </FlexBetween>
 
-                            <input type="text" onChange={curriedOnChange(player.index)} value={player.name} />
-                        </FormItem>
+                                 <input
+                               id={`player-${player.index}`}
+                             name={`player-${player.index}`}
+                                       type="text"
+                                  onChange={curriedOnChange(player.index)}
+                                    value={player.name}
+                              />                       
+                               </FormItem>
                     ))}
 
                     <FlexEnd>
