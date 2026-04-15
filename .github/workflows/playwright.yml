@@ -44,7 +44,7 @@ jobs:
 
       - name: Prepare report for GitHub Pages
         run: |
-          mkdir public
+          mkdir -p public
           cp -r playwright-report/* public/
 
       - name: Upload GitHub Pages artifact
