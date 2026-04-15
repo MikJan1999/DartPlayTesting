@@ -46,6 +46,7 @@ jobs:
         run: |
           mkdir -p public
           cp -r playwright-report/* public/
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
