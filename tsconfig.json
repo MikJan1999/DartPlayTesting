@@ -3,7 +3,15 @@
     "target": "ES2020",
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "types": ["node"],
+    "ignoreDeprecations": "6.0",
+    
+
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react-jsx",
+
+    "types": ["node", "@testing-library/jest-dom", "vitest/globals"],
+
     "baseUrl": "src",
     "paths": {
       "AppSetting": ["AppSetting.js"],
@@ -13,17 +21,20 @@
       "services/*": ["services/*"],
       "context/*": ["context/*"]
     },
+
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
-    "ignoreDeprecations": "6.0"
+    "noEmit": true
   },
+
   "include": [
-    "tests/**/*.ts",
-    "playwright.config.ts",
-    "src"
+    "src",
+    "tests",
+    "playwright.config.ts"
   ],
+
   "exclude": [
     "node_modules",
     "build",

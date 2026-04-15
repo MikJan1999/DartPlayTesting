@@ -1,4 +1,4 @@
-import { APP_ROUTES } from 'AppSetting';
+import { APP_ROUTES } from '../../AppSetting';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { DecorativeHeader, DecorativeHeaderSpace } from '../../components/headers/DecorativeHeader';
